@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>𝙈𝙄𝙆𝙐 Card Filter</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #000000;
+            color: #ffffff;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            opacity: 0.5;
+            z-index: -1;
+        }
+        
+        .header {
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .title {
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 14px 20px;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 16px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box:focus {
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 4px;
+        }
+        
+        .filter-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: none;
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.6);
+            white-space: nowrap;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .item-list {
+            height: calc(100vh - 180px);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 8px;
+        }
+        
+        .item {
+            padding: 16px 20px;
+            margin-bottom: 8px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(102, 126, 234, 0.3);
+            transform: translateX(4px);
+        }
+        
+        .item-name {
+            font-weight: 600;
+            font-size: 15px;
+            color: #ffffff;
+        }
+        
+        .item-count {
+            font-size: 13px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 6px 12px;
+            border-radius: 20px;
+            color: #ffffff;
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 48px 24px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 16px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 48px 24px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            margin-top: 12px;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">𝙈𝙄𝙆𝙐 🌸</div>
+        <input type="text" class="search-box" placeholder="🔍 Search..." id="searchInput">
+        
+        <div class="filter-tabs" id="tabs">
+            <button class="tab active" data-filter="banks">🏦 Banks</button>
+            <button class="tab" data-filter="types">💳 Type</button>
+            <button class="tab" data-filter="countries">🌍 Country</button>
+            <button class="tab" data-filter="levels">⭐ Level</button>
+        </div>
+        
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat">
+                <div class="stat-value" id="totalItems">0</div>
+                <div class="stat-label">Total</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="filteredItems">0</div>
+                <div class="stat-label">Showing</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="item-list" id="itemList">
+        <div class="loading">Loading data...</div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        
+        let data = null;
+        let currentFilter = 'banks';
+        let searchTerm = '';
+        
+        const pathParts = window.location.pathname.split('/');
+        const chatId = pathParts[pathParts.length - 1];
+        
+        if (chatId && chatId !== 'public' && chatId !== 'index.html') {
+            fetch(`/api/data?chatId=${chatId}`)
+                .then(res => res.json())
+                .then(fetchedData => {
+                    data = fetchedData;
+                    document.getElementById('stats').style.display = 'flex';
+                    renderItems();
+                })
+                .catch(err => {
+                    document.getElementById('itemList').innerHTML = 
+                        '<div class="no-results">⚠️ Failed to load data</div>';
+                });
+        }
+        
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentFilter = tab.dataset.filter;
+                searchTerm = '';
+                document.getElementById('searchInput').value = '';
+                renderItems();
+            });
+        });
+        
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            searchTerm = e.target.value.toLowerCase();
+            renderItems();
+        });
+        
+        function renderItems() {
+            if (!data) return;
+            
+            const items = data[currentFilter] || [];
+            const counts = data.counts || {};
+            const filtered = items.filter(item => item.toLowerCase().includes(searchTerm));
+            
+            document.getElementById('totalItems').textContent = items.length;
+            document.getElementById('filteredItems').textContent = filtered.length;
+            
+            if (filtered.length === 0) {
+                document.getElementById('itemList').innerHTML = 
+                    '<div class="no-results">😔 No results found</div>';
+                return;
+            }
+            
+            document.getElementById('itemList').innerHTML = filtered.map(item => {
+                const count = counts[item] || 0;
+                return `
+                    <div class="item" data-value="${item.replace(/"/g, '&quot;')}">
+                        <span class="item-name">${item}</span>
+                        ${count ? `<span class="item-count">${count}</span>` : ''}
+                    </div>
+                `;
+            }).join('');
+            
+            document.querySelectorAll('.item').forEach(item => {
+                item.addEventListener('click', () => {
+                    tg.sendData(JSON.stringify({
+                        filter: currentFilter,
+                        value: item.dataset.value
+                    }));
+                });
+            });
+        }
+    </script>
+</body>
+</html>
