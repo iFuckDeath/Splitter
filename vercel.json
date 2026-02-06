@@ -1,9 +1,12 @@
 {
-  "version": 2,
   "rewrites": [
     {
+      "source": "/filter/:chatId",
+      "destination": "/index.html"
+    },
+    {
       "source": "/(.*)",
-      "destination": "/public/index.html"
+      "destination": "/index.html"
     }
   ]
 }
