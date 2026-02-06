@@ -17,8 +17,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
             background: #000000;
             color: #ffffff;
-            overflow: hidden;
-            position: relative;
+            overflow-x: hidden;
         }
         
         body::before {
@@ -33,21 +32,16 @@
             z-index: -1;
         }
         
-        .header {
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(20px);
+        .container {
             padding: 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            padding-bottom: 100px;
         }
         
         .title {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 700;
             text-align: center;
-            margin-bottom: 16px;
+            margin-bottom: 24px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -55,119 +49,92 @@
             letter-spacing: 2px;
         }
         
-        .search-box {
-            width: 100%;
-            padding: 14px 20px;
-            border: 2px solid rgba(102, 126, 234, 0.3);
+        .filter-section {
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 16px;
-            font-size: 16px;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .filter-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .filter-select {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: 2px solid rgba(102, 126, 234, 0.3);
             background: rgba(255, 255, 255, 0.05);
             color: #ffffff;
+            font-size: 15px;
             outline: none;
             transition: all 0.3s ease;
         }
         
-        .search-box:focus {
+        .filter-select:focus {
             border-color: #667eea;
             background: rgba(255, 255, 255, 0.08);
             box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
         }
         
-        .search-box::placeholder {
-            color: rgba(255, 255, 255, 0.4);
+        .filter-select option {
+            background: #1a1a2e;
+            color: #ffffff;
         }
         
-        .filter-tabs {
+        .selected-filters {
             display: flex;
-            gap: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
             margin-top: 16px;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            padding-bottom: 4px;
+            min-height: 40px;
         }
         
-        .filter-tabs::-webkit-scrollbar {
-            display: none;
-        }
-        
-        .tab {
-            padding: 10px 20px;
-            border-radius: 25px;
-            border: none;
-            background: rgba(255, 255, 255, 0.05);
-            color: rgba(255, 255, 255, 0.6);
-            white-space: nowrap;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .tab.active {
+        .filter-tag {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #ffffff;
-            transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        }
-        
-        .item-list {
-            height: calc(100vh - 260px);
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            padding: 8px;
-        }
-        
-        .item {
-            padding: 16px 20px;
-            margin-bottom: 8px;
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            animation: slideIn 0.3s ease;
-        }
-        
-        .item.selected {
-            background: rgba(102, 126, 234, 0.2);
-            border-color: #667eea;
-            transform: scale(1.02);
-        }
-        
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        
-        .item:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(102, 126, 234, 0.3);
-        }
-        
-        .item-name {
-            font-weight: 600;
-            font-size: 15px;
-            color: #ffffff;
-        }
-        
-        .item-count {
+            padding: 8px 16px;
+            border-radius: 20px;
             font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-tag-label {
+            opacity: 0.8;
+            font-size: 11px;
+        }
+        
+        .stats-box {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .stats-number {
+            font-size: 32px;
             font-weight: 700;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 6px 12px;
-            border-radius: 20px;
-            color: #ffffff;
-            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stats-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 4px;
+            text-transform: uppercase;
         }
         
         .download-btn {
@@ -175,12 +142,12 @@
             bottom: 20px;
             left: 16px;
             right: 16px;
-            padding: 16px;
+            padding: 18px;
             border: none;
             border-radius: 16px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #ffffff;
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 700;
             cursor: pointer;
             box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
@@ -189,19 +156,12 @@
         }
         
         .download-btn:disabled {
-            opacity: 0.5;
+            opacity: 0.4;
             cursor: not-allowed;
         }
         
         .download-btn:active:not(:disabled) {
             transform: scale(0.98);
-        }
-        
-        .no-results {
-            text-align: center;
-            padding: 48px 24px;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 16px;
         }
         
         .loading {
@@ -210,168 +170,178 @@
             color: rgba(255, 255, 255, 0.5);
         }
         
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            margin-top: 12px;
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 16px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
         
-        .stat-value {
-            font-size: 20px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .stat-label {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.5);
-            margin-top: 4px;
-            text-transform: uppercase;
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="title">𝙈𝙄𝙆𝙐 🌸</div>
-        <input type="text" class="search-box" placeholder="🔍 Search..." id="searchInput">
-        
-        <div class="filter-tabs" id="tabs">
-            <button class="tab active" data-filter="banks">🏦 Banks</button>
-            <button class="tab" data-filter="types">💳 Type</button>
-            <button class="tab" data-filter="countries">🌍 Country</button>
-            <button class="tab" data-filter="levels">⭐ Level</button>
-        </div>
-        
-        <div class="stats" id="stats" style="display: none;">
-            <div class="stat">
-                <div class="stat-value" id="totalItems">0</div>
-                <div class="stat-label">Total</div>
-            </div>
-            <div class="stat">
-                <div class="stat-value" id="filteredItems">0</div>
-                <div class="stat-label">Showing</div>
-            </div>
+    <div class="container" id="mainContent">
+        <div class="loading">
+            <div class="loading-spinner"></div>
+            <div>Loading filters...</div>
         </div>
     </div>
     
-    <div class="item-list" id="itemList">
-        <div class="loading">Loading data...</div>
-    </div>
-    
-    <button class="download-btn" id="downloadBtn" disabled>Select a filter to download</button>
+    <button class="download-btn" id="downloadBtn" disabled style="display: none;">
+        📥 Download Cards
+    </button>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
         
         let data = null;
-        let currentFilter = 'banks';
-        let searchTerm = '';
-        let selectedValue = null;
+        let filters = {
+            bank: '',
+            type: '',
+            country: '',
+            level: ''
+        };
         
         const pathParts = window.location.pathname.split('/');
         const chatId = pathParts[pathParts.length - 1];
-        
         const API_URL = 'https://practitioner-conducting-kitty-children.trycloudflare.com';
         
         const downloadBtn = document.getElementById('downloadBtn');
+        const mainContent = document.getElementById('mainContent');
         
         if (chatId && chatId !== '' && chatId !== 'index.html') {
             fetch(`${API_URL}/api/data/${chatId}`)
                 .then(res => res.json())
                 .then(fetchedData => {
                     data = fetchedData;
-                    document.getElementById('stats').style.display = 'flex';
-                    renderItems();
+                    renderFilters();
                 })
                 .catch(err => {
-                    console.error(err);
-                    document.getElementById('itemList').innerHTML = 
-                        '<div class="no-results">⚠️ Failed to load data</div>';
+                    mainContent.innerHTML = '<div class="loading">⚠️ Failed to load data</div>';
                 });
         }
         
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                currentFilter = tab.dataset.filter;
-                searchTerm = '';
-                selectedValue = null;
-                document.getElementById('searchInput').value = '';
-                updateDownloadButton();
-                renderItems();
+        function renderFilters() {
+            const matchingCount = getMatchingCount();
+            
+            mainContent.innerHTML = `
+                <div class="title">𝙈𝙄𝙆𝙐 🌸</div>
+                
+                <div class="stats-box">
+                    <div class="stats-number">${matchingCount}</div>
+                    <div class="stats-label">Matching Cards</div>
+                </div>
+                
+                <div class="filter-section">
+                    <div class="filter-label">🏦 Bank</div>
+                    <select class="filter-select" id="bankSelect">
+                        <option value="">All Banks</option>
+                        ${data.banks.map(b => `<option value="${b}" ${filters.bank === b ? 'selected' : ''}>${b}</option>`).join('')}
+                    </select>
+                </div>
+                
+                <div class="filter-section">
+                    <div class="filter-label">💳 Card Type</div>
+                    <select class="filter-select" id="typeSelect">
+                        <option value="">All Types</option>
+                        ${data.types.map(t => `<option value="${t}" ${filters.type === t ? 'selected' : ''}>${t}</option>`).join('')}
+                    </select>
+                </div>
+                
+                <div class="filter-section">
+                    <div class="filter-label">🌍 Country</div>
+                    <select class="filter-select" id="countrySelect">
+                        <option value="">All Countries</option>
+                        ${data.countries.map(c => `<option value="${c}" ${filters.country === c ? 'selected' : ''}>${c}</option>`).join('')}
+                    </select>
+                </div>
+                
+                <div class="filter-section">
+                    <div class="filter-label">⭐ Card Level</div>
+                    <select class="filter-select" id="levelSelect">
+                        <option value="">All Levels</option>
+                        ${data.levels.map(l => `<option value="${l}" ${filters.level === l ? 'selected' : ''}>${l}</option>`).join('')}
+                    </select>
+                </div>
+                
+                <div class="selected-filters" id="selectedFilters"></div>
+            `;
+            
+            document.getElementById('bankSelect').addEventListener('change', (e) => {
+                filters.bank = e.target.value;
+                updateUI();
             });
-        });
+            
+            document.getElementById('typeSelect').addEventListener('change', (e) => {
+                filters.type = e.target.value;
+                updateUI();
+            });
+            
+            document.getElementById('countrySelect').addEventListener('change', (e) => {
+                filters.country = e.target.value;
+                updateUI();
+            });
+            
+            document.getElementById('levelSelect').addEventListener('change', (e) => {
+                filters.level = e.target.value;
+                updateUI();
+            });
+            
+            updateUI();
+        }
         
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            searchTerm = e.target.value.toLowerCase();
-            renderItems();
-        });
+        function getMatchingCount() {
+            if (!data) return 0;
+            
+            // This is an estimate - actual filtering happens on server
+            let total = 0;
+            for (let key in data.counts) {
+                const matchesBank = !filters.bank || key === filters.bank;
+                if (matchesBank) {
+                    total += data.counts[key];
+                }
+            }
+            return total;
+        }
+        
+        function updateUI() {
+            const count = getMatchingCount();
+            const hasFilters = filters.bank || filters.type || filters.country || filters.level;
+            
+            // Update stats
+            const statsNumber = document.querySelector('.stats-number');
+            if (statsNumber) {
+                statsNumber.textContent = count;
+            }
+            
+            // Update download button
+            if (hasFilters && count > 0) {
+                downloadBtn.style.display = 'block';
+                downloadBtn.disabled = false;
+                downloadBtn.textContent = `📥 Download ${count} Cards`;
+            } else if (hasFilters) {
+                downloadBtn.style.display = 'block';
+                downloadBtn.disabled = true;
+                downloadBtn.textContent = '❌ No matching cards';
+            } else {
+                downloadBtn.style.display = 'block';
+                downloadBtn.disabled = true;
+                downloadBtn.textContent = 'Select filters to download';
+            }
+        }
         
         downloadBtn.addEventListener('click', () => {
-            if (selectedValue) {
-                tg.sendData(JSON.stringify({
-                    filter: currentFilter,
-                    value: selectedValue
-                }));
+            if (!downloadBtn.disabled) {
+                tg.sendData(JSON.stringify(filters));
             }
         });
-        
-        function updateDownloadButton() {
-            if (selectedValue) {
-                const count = data.counts[selectedValue] || 0;
-                downloadBtn.textContent = `📥 Download ${count} cards`;
-                downloadBtn.disabled = false;
-            } else {
-                downloadBtn.textContent = 'Select a filter to download';
-                downloadBtn.disabled = true;
-            }
-        }
-        
-        function renderItems() {
-            if (!data) return;
-            
-            const items = data[currentFilter] || [];
-            const counts = data.counts || {};
-            const filtered = items.filter(item => item.toLowerCase().includes(searchTerm));
-            
-            document.getElementById('totalItems').textContent = items.length;
-            document.getElementById('filteredItems').textContent = filtered.length;
-            
-            if (filtered.length === 0) {
-                document.getElementById('itemList').innerHTML = 
-                    '<div class="no-results">😔 No results found</div>';
-                return;
-            }
-            
-            document.getElementById('itemList').innerHTML = filtered.map(item => {
-                const count = counts[item] || 0;
-                const isSelected = item === selectedValue ? 'selected' : '';
-                return `
-                    <div class="item ${isSelected}" data-value="${item.replace(/"/g, '&quot;')}">
-                        <span class="item-name">${item}</span>
-                        ${count ? `<span class="item-count">${count}</span>` : ''}
-                    </div>
-                `;
-            }).join('');
-            
-            document.querySelectorAll('.item').forEach(item => {
-                item.addEventListener('click', () => {
-                    // Remove selected from all
-                    document.querySelectorAll('.item').forEach(i => i.classList.remove('selected'));
-                    // Add selected to clicked
-                    item.classList.add('selected');
-                    selectedValue = item.dataset.value;
-                    updateDownloadButton();
-                });
-            });
-        }
     </script>
 </body>
 </html>
