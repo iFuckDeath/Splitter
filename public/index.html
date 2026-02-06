@@ -111,7 +111,7 @@
         }
         
         .item-list {
-            height: calc(100vh - 180px);
+            height: calc(100vh - 260px);
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             padding: 8px;
@@ -132,6 +132,12 @@
             animation: slideIn 0.3s ease;
         }
         
+        .item.selected {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+            transform: scale(1.02);
+        }
+        
         @keyframes slideIn {
             from {
                 opacity: 0;
@@ -146,7 +152,6 @@
         .item:hover {
             background: rgba(255, 255, 255, 0.08);
             border-color: rgba(102, 126, 234, 0.3);
-            transform: translateX(4px);
         }
         
         .item-name {
@@ -163,6 +168,33 @@
             border-radius: 20px;
             color: #ffffff;
             box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+        }
+        
+        .download-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 16px;
+            right: 16px;
+            padding: 16px;
+            border: none;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
+            transition: all 0.3s ease;
+            z-index: 200;
+        }
+        
+        .download-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .download-btn:active:not(:disabled) {
+            transform: scale(0.98);
         }
         
         .no-results {
@@ -230,6 +262,8 @@
     <div class="item-list" id="itemList">
         <div class="loading">Loading data...</div>
     </div>
+    
+    <button class="download-btn" id="downloadBtn" disabled>Select a filter to download</button>
 
     <script>
         const tg = window.Telegram.WebApp;
@@ -238,12 +272,14 @@
         let data = null;
         let currentFilter = 'banks';
         let searchTerm = '';
+        let selectedValue = null;
         
         const pathParts = window.location.pathname.split('/');
         const chatId = pathParts[pathParts.length - 1];
         
-        // Direct API URL
         const API_URL = 'https://practitioner-conducting-kitty-children.trycloudflare.com';
+        
+        const downloadBtn = document.getElementById('downloadBtn');
         
         if (chatId && chatId !== '' && chatId !== 'index.html') {
             fetch(`${API_URL}/api/data/${chatId}`)
@@ -266,7 +302,9 @@
                 tab.classList.add('active');
                 currentFilter = tab.dataset.filter;
                 searchTerm = '';
+                selectedValue = null;
                 document.getElementById('searchInput').value = '';
+                updateDownloadButton();
                 renderItems();
             });
         });
@@ -275,6 +313,26 @@
             searchTerm = e.target.value.toLowerCase();
             renderItems();
         });
+        
+        downloadBtn.addEventListener('click', () => {
+            if (selectedValue) {
+                tg.sendData(JSON.stringify({
+                    filter: currentFilter,
+                    value: selectedValue
+                }));
+            }
+        });
+        
+        function updateDownloadButton() {
+            if (selectedValue) {
+                const count = data.counts[selectedValue] || 0;
+                downloadBtn.textContent = `📥 Download ${count} cards`;
+                downloadBtn.disabled = false;
+            } else {
+                downloadBtn.textContent = 'Select a filter to download';
+                downloadBtn.disabled = true;
+            }
+        }
         
         function renderItems() {
             if (!data) return;
@@ -294,8 +352,9 @@
             
             document.getElementById('itemList').innerHTML = filtered.map(item => {
                 const count = counts[item] || 0;
+                const isSelected = item === selectedValue ? 'selected' : '';
                 return `
-                    <div class="item" data-value="${item.replace(/"/g, '&quot;')}">
+                    <div class="item ${isSelected}" data-value="${item.replace(/"/g, '&quot;')}">
                         <span class="item-name">${item}</span>
                         ${count ? `<span class="item-count">${count}</span>` : ''}
                     </div>
@@ -304,10 +363,12 @@
             
             document.querySelectorAll('.item').forEach(item => {
                 item.addEventListener('click', () => {
-                    tg.sendData(JSON.stringify({
-                        filter: currentFilter,
-                        value: item.dataset.value
-                    }));
+                    // Remove selected from all
+                    document.querySelectorAll('.item').forEach(i => i.classList.remove('selected'));
+                    // Add selected to clicked
+                    item.classList.add('selected');
+                    selectedValue = item.dataset.value;
+                    updateDownloadButton();
                 });
             });
         }
