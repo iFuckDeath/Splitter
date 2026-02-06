@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>𝙈𝙄𝙆𝙐 Card Filter</title>
+    <title>𝙈𝙄𝙆𝙐</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
@@ -242,7 +242,7 @@
         const pathParts = window.location.pathname.split('/');
         const chatId = pathParts[pathParts.length - 1];
         
-        // Direct API URL - using Cloudflare tunnel
+        // Direct API URL
         const API_URL = 'https://practitioner-conducting-kitty-children.trycloudflare.com';
         
         if (chatId && chatId !== '' && chatId !== 'index.html') {
